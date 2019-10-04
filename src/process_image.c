@@ -6,6 +6,7 @@
 #include <time.h>
 #include "filter.h"
 #include "image.h"
+#include "segmentation.h"
 
 
 void print_image(image target){
@@ -112,16 +113,23 @@ int main(int argc, char **argv){
 	clock_t begin = clock();
 
 	char *out = find_char_arg(argc, argv, "-o", "qout");
-	image target = load_image("cat.jpg");
-	image temp = make_box_filter(3);
+	image target = make_image(5, 5, 1);
+	int dataArray[] = {0, 0 ,-1, -1, 0, 0, 0, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, 0, 0, -1, -1, 0, -1};
+	for(int i = 0; i < 25; i++){
+		target.data[i] = dataArray[i];
+	}
+	image result = segment_image(target);
+	print_image(result);
+//	image target = load_image("cat.jpg");
+//	image temp = make_box_filter(3);
 //	image filter = emboss_filter(temp);
 //	image filter = outline_filter(temp);
 //	image filter = sobel_filter(temp);
 //	image filter = sharpen_filter(temp);
-	image filter = blur_filter(temp);
+//	image filter = blur_filter(temp);
 //	image filter = high_pass_filter(temp);
-	image result = apply_filter(target, filter);
-	save_image(result, out);
+//	image result = apply_filter(target, filter);
+//	save_image(result, out);
 
 	// ending the clock
 	clock_t end = clock();
