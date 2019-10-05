@@ -112,7 +112,7 @@ int main(int argc, char **argv){
 	// we super fast vroom vroom
 	clock_t begin = clock();
 
-	char *out = find_char_arg(argc, argv, "-o", "qout");
+	char *out = find_char_arg(argc, argv, "-o", "out");
 	image target = make_image(5, 5, 1);
 	int dataArray[] = {0, 0 ,-1, -1, 0, 0, 0, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, 0, 0, -1, -1, 0, -1};
 	for(int i = 0; i < 25; i++){
