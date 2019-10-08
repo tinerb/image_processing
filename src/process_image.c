@@ -111,16 +111,9 @@ int main(int argc, char **argv){
 
 	// we super fast vroom vroom
 	clock_t begin = clock();
-
+	image target = load_image("cat.jpg");
 	char *out = find_char_arg(argc, argv, "-o", "out");
-	image target = make_image(5, 5, 1);
-	int dataArray[] = {0, 0 ,-1, -1, 0, 0, 0, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, 0, 0, -1, -1, 0, -1};
-	for(int i = 0; i < 25; i++){
-		target.data[i] = dataArray[i];
-	}
 	image result = segment_image(target);
-	print_image(result);
-//	image target = load_image("cat.jpg");
 //	image temp = make_box_filter(3);
 //	image filter = emboss_filter(temp);
 //	image filter = outline_filter(temp);

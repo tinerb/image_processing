@@ -14,15 +14,17 @@ int equivalence_list;
 */
 image label_image(image filtered_image){
 	image result = make_image(filtered_image.w, filtered_image.h, 1);
+	int count = 0;
 	for (int i = 0; i < result.w * result.h; i++){
-		if (filtered_image.data[i] == 0){
-			result.data[i] = 0;
+		if (filtered_image.data[i] < 0.05){
+			result.data[i] = -1;
+			count++;
 		}
 		else{
-			result.data[i] = -1;
+			result.data[i] = 0;
 		}
 	}
-
+	printf("%d\n", count);
 	return result;
 }
 
