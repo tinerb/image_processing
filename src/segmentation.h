@@ -11,6 +11,15 @@
 #include "image.h"
 #include "filter.h"
 
+
+typedef struct lnode {
+	int value;
+	int equivalent;
+	struct lnode *next;
+} equivalence_list;
+
+
+
 image label_image(image filtered_image);
 image apply_equivalence_list(image labeled_image, int equivalence_list);
 image raster_scan(image filtered_image);
