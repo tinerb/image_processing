@@ -3,7 +3,7 @@
 #include "image.h"
 
 // make this global so we can use it with different functions
-int equivalence_list;
+equivalence_list *list = NULL;
 
 /*
  * goes through our target image and labels each pixel with
@@ -14,17 +14,14 @@ int equivalence_list;
 */
 image label_image(image filtered_image){
 	image result = make_image(filtered_image.w, filtered_image.h, 1);
-	int count = 0;
 	for (int i = 0; i < result.w * result.h; i++){
 		if (filtered_image.data[i] < 0.05){
 			result.data[i] = -1;
-			count++;
 		}
 		else{
 			result.data[i] = 0;
 		}
 	}
-	printf("%d\n", count);
 	return result;
 }
 
@@ -38,6 +35,7 @@ image raster_scan(image filtered_image){
 	int current_equivalence = 1;
 	int top_pixel, left_pixel, current_pixel, top_left_pixel;
 	image labeled_image = label_image(filtered_image);
+	equivalence_list *current;
 
 	for(int y = 0; y < (labeled_image.h); y++){
 		for(int x = 0; x < (labeled_image.w); x++){
@@ -75,6 +73,18 @@ image raster_scan(image filtered_image){
 				// found new region; top and left pixels are not foreground
 				else{
 					current_pixel = current_equivalence;
+					if(current_equivalence == 1){
+						list->equivalent = current_equivalence;
+						list->value = current_equivalence;
+						current = list;
+					}
+					else{
+						equivalence_list *new_node;
+						new_node->equivalent = current_equivalence;
+						new_node->value = current_equivalence;
+						current->next = new_node;
+						current = current->next;
+					}
 					current_equivalence++;
 				}
 
@@ -83,6 +93,8 @@ image raster_scan(image filtered_image){
 			labeled_image.data[y * labeled_image.w + x] = current_pixel;
 		}
 	}
+
+	print_list(&current);
 
 	return labeled_image;
 }
@@ -98,6 +110,12 @@ image apply_equivalence_list(image labeled_image, int equivalence_list){
 	image segmented_image = make_image(labeled_image.w, labeled_image.h, 1);
 
 	return segmented_image;
+}
+
+void print_list(equivalence_list *list){
+	while(list->next != NULL){
+		printf("value: %d		equivalent: %d", list->value);
+	}
 }
 
 /*
