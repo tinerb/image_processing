@@ -34,7 +34,7 @@ image label_image(image filtered_image){
 image raster_scan(image filtered_image){
 	// our current equivalence label number
 	int current_equivalence = 1;
-	int top_pixel, left_pixel, current_pixel;
+	int top_pixel, left_pixel, current_pixel, top_left_pixel;
 	image labeled_image = label_image(filtered_image);
 
 	for(int y = 0; y < (labeled_image.h); y++){
@@ -46,6 +46,7 @@ image raster_scan(image filtered_image){
 				// looks to the needed adjacent pixel to see if they're already labeled
 				top_pixel = find_pixel_conv(labeled_image, x, y - 1, 0); // top middle
 				left_pixel = find_pixel_conv(labeled_image, x - 1, y, 0); // middle left
+				top_left_pixel = find_pixel_conv(labeled_image, x - 1, y - 1, 0);
 
 				// SOMEWHERE IN THIS LOGIC WE HAVE TO ADD EQUIVALENCE LIST STUFF
 
@@ -65,6 +66,9 @@ image raster_scan(image filtered_image){
 				}
 				else if(left_pixel > 0){
 					current_pixel = left_pixel;
+				}
+				else if(top_left_pixel > 0){
+					current_pixel = top_left_pixel;
 				}
 				// found new region; top and left pixels are not foreground
 				else{
