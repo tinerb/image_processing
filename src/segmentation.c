@@ -5,6 +5,51 @@
 // make this global so we can use it with different functions
 equivalence_list *list = NULL;
 
+node *new_node(char data) {
+	node *np = (node*) malloc(sizeof(node));
+	np->data = data;
+	np->prev = NULL;
+	np->next = NULL;
+	return np;
+}
+
+void insert_end(node **headp, node **tailp, node *new_np) {
+	 if (*headp == NULL){
+		 *headp = new_np;
+		 *tailp = new_np;
+	 }
+	 else{
+		 (*tailp)->next = new_np;
+		 new_np ->prev = *tailp;
+		 *tailp = new_np;
+	 }
+}
+
+void display_forward(node *head) {
+	node *np;
+	for (np = head; np != NULL; np = np->next){
+		printf("%c, ", np->data);
+	}
+}
+
+void display_backward(node *tail) {
+	node *np;
+	for (np = tail; np != NULL; np = np->prev){
+			printf("%c, ", np->data);
+	}
+}
+
+void clean(node **headp) {
+	node** np = headp;
+	node** temp;
+
+	while ((*np) -> next != NULL){
+		temp = np;
+		free(temp);
+		(*np) = (*np) -> next;
+	}
+}
+
 /*
  * goes through our target image and labels each pixel with
  * foreground(black pixels) as -1 and background(white pixels)
@@ -94,7 +139,7 @@ image raster_scan(image filtered_image){
 		}
 	}
 
-	print_list(&current);
+	print_list(&list);
 
 	return labeled_image;
 }
@@ -114,7 +159,7 @@ image apply_equivalence_list(image labeled_image, int equivalence_list){
 
 void print_list(equivalence_list *list){
 	while(list->next != NULL){
-		printf("value: %d		equivalent: %d", list->value);
+		printf("value: %f		equivalent: %f", list->value);
 	}
 }
 
