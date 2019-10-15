@@ -72,10 +72,9 @@ image label_image(image filtered_image){
 	image result = make_image(filtered_image.w, filtered_image.h, 1);
 
 	float threshold = histogram_threshold(filtered_image);
-	printf("threshold: %f\n", threshold); // for women.jpg we should get 0.623529 but we get 27?
 	for (int i = 0; i < result.w * result.h; i++){
 		if (filtered_image.data[i] < threshold){
-			result.data[i] = -1;
+			result.data[i] = 1;
 		}
 		else{
 			result.data[i] = 0;
@@ -148,7 +147,7 @@ image raster_scan(image filtered_image){
 		}
 	}
 
-	//display_forward(head);
+	display_forward(head);
 
 	return labeled_image;
 }
