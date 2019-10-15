@@ -110,6 +110,9 @@ image raster_scan(image filtered_image){
 				// if both VIP pixels are labeled, choose smallest value
 				// keeps out equivalence list consistent
 				// this might be wrong; might only want top pixel
+
+				// changed result.data[i] = 1; in label_image() for better results ie. only white and black values
+				// this change greatly effects the code below, but im too tired to fix it rn
 				if(top_pixel > 0 && left_pixel > 0){
 					if(top_pixel < left_pixel){
 						current_pixel = top_pixel;
