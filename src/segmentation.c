@@ -1,13 +1,15 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "segmentation.h"
 #include "image.h"
 
 // make this global so we can use it with different functions
-equivalence_list *list = NULL;
+node *head=NULL, *tail=NULL;
 
-node *new_node(char data) {
+node *new_node(float data, float equivalent) {
 	node *np = (node*) malloc(sizeof(node));
 	np->data = data;
+	np->equivalent = equivalent;
 	np->prev = NULL;
 	np->next = NULL;
 	return np;
@@ -28,15 +30,24 @@ void insert_end(node **headp, node **tailp, node *new_np) {
 void display_forward(node *head) {
 	node *np;
 	for (np = head; np != NULL; np = np->next){
-		printf("%c, ", np->data);
+		printf("%.2f, %.2f\n", np->data, np->equivalent);
 	}
 }
 
 void display_backward(node *tail) {
 	node *np;
 	for (np = tail; np != NULL; np = np->prev){
-			printf("%c, ", np->data);
+		printf("%.2f, %.2f\n", np->data, np->equivalent);
 	}
+}
+
+
+// returns the node that we want to change
+node* search(node *tail, int num) {
+	while ((tail != NULL) && (tail->data != num)) {
+		tail = tail->prev;
+	}
+	return tail;
 }
 
 void clean(node **headp) {
@@ -59,8 +70,11 @@ void clean(node **headp) {
 */
 image label_image(image filtered_image){
 	image result = make_image(filtered_image.w, filtered_image.h, 1);
+
+	float threshold = histogram_threshold(filtered_image);
+	printf("threshold: %f\n", threshold); // for women.jpg we should get 0.623529 but we get 27?
 	for (int i = 0; i < result.w * result.h; i++){
-		if (filtered_image.data[i] < 0.05){
+		if (filtered_image.data[i] < threshold){
 			result.data[i] = -1;
 		}
 		else{
@@ -80,7 +94,6 @@ image raster_scan(image filtered_image){
 	int current_equivalence = 1;
 	int top_pixel, left_pixel, current_pixel, top_left_pixel;
 	image labeled_image = label_image(filtered_image);
-	equivalence_list *current;
 
 	for(int y = 0; y < (labeled_image.h); y++){
 		for(int x = 0; x < (labeled_image.w); x++){
@@ -118,17 +131,13 @@ image raster_scan(image filtered_image){
 				// found new region; top and left pixels are not foreground
 				else{
 					current_pixel = current_equivalence;
-					if(current_equivalence == 1){
-						list->equivalent = current_equivalence;
-						list->value = current_equivalence;
-						current = list;
+					if(current_equivalence == 1){ // this IF might be redundant
+						node *n = new_node(current_equivalence, current_equivalence);
+						insert_end(&head, &tail, n);
 					}
 					else{
-						equivalence_list *new_node;
-						new_node->equivalent = current_equivalence;
-						new_node->value = current_equivalence;
-						current->next = new_node;
-						current = current->next;
+						node *n = new_node(current_equivalence, current_equivalence);
+						insert_end(&head, &tail, n);
 					}
 					current_equivalence++;
 				}
@@ -139,7 +148,7 @@ image raster_scan(image filtered_image){
 		}
 	}
 
-	print_list(&list);
+	//display_forward(head);
 
 	return labeled_image;
 }
@@ -155,12 +164,6 @@ image apply_equivalence_list(image labeled_image, int equivalence_list){
 	image segmented_image = make_image(labeled_image.w, labeled_image.h, 1);
 
 	return segmented_image;
-}
-
-void print_list(equivalence_list *list){
-	while(list->next != NULL){
-		printf("value: %f		equivalent: %f", list->value);
-	}
 }
 
 /*
