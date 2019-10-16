@@ -70,16 +70,19 @@ void clean(node **headp) {
 */
 image label_image(image filtered_image){
 	image result = make_image(filtered_image.w, filtered_image.h, 1);
-
+	int black = 0, white = 0;
 	float threshold = histogram_threshold(filtered_image);
 	for (int i = 0; i < result.w * result.h; i++){
 		if (filtered_image.data[i] < threshold){
 			result.data[i] = 1;
+			white++;
 		}
 		else{
 			result.data[i] = 0;
+			black++;
 		}
 	}
+
 	return result;
 }
 

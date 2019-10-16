@@ -69,13 +69,12 @@ float histogram_threshold(image im){
 
 	for (int i = 0; i < im.w * im.h; i++){
 		// change it to range 0..255
-//		float pixel_hist_value = im.data[i] * 255; // convert to 0..255 for easier math
 		unsigned char pixel_hist_value = im.data[i] * 255;
 		int n = (int) pixel_hist_value; // this casting makes it work
 		hist[n] += 1;
 	}
 	threshold = get_threshold(hist, T);
-	return_threshold = (float)threshold/255.; // MAKE THIS RETURN A PROPER FLOAT AND WE ARE GOOD
+	return_threshold = (float)threshold/255.;
 	t = return_threshold;
 	printf("t: %f\n", t);
 	return t;
