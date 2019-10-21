@@ -107,6 +107,15 @@ void print_target_matrix(image target, int x, int y){
 
 }
 
+int if_blur(image filter){
+	if (filter.data[0] == 1 && filter.data[1] == 1 && filter.data[2] == 1 && filter.data[3] == 1 && filter.data[4] == 1 && filter.data[5] == 1 && filter.data[6] == 1 && filter.data[7] == 1 && filter.data[8] == 1){
+		return 1;
+	}
+	else{
+		return 0;
+	}
+}
+
 image apply_filter(image target, image filter){
 	// why are we adding the widths and heights together before sending it through
 //	image result = make_image(target.w + filter.w - 1, target.h + filter.h - 1, 1);
@@ -146,7 +155,9 @@ image apply_filter(image target, image filter){
 				sum += (pixels_to_change[q] * rotated.data[q]);
 			}
 			// divide to get proper changed value; not blown out
-			//sum = sum / 9;
+			if (if_blur(filter) == 1){
+				sum = sum / 9;
+			}
 
 			if(sum < 0.01){
 				sum = 0;

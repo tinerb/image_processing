@@ -16,7 +16,6 @@ void print_image(image target){
 			printf("\n");
 		}
 	}
-
 }
 
 // returns the index of the x, y, c pixel given
@@ -108,22 +107,73 @@ float three_way_min(float a, float b, float c)
 }
 
 int main(int argc, char **argv){
-
-	// we super fast vroom vroom
-	clock_t begin = clock();
-	image target = load_image("cat.jpg");
+	char image_name[100];
+	int assignment;
 	char *out = find_char_arg(argc, argv, "-o", "out");
-	image result = segment_image(target);
-//	image temp = make_box_filter(3);
-//	image filter = emboss_filter(temp);
-//	image filter = outline_filter(temp);
-//	image filter = sobel_filter(temp);
-//	image filter = sharpen_filter(temp);
-//	image filter = blur_filter(temp);
-//	image filter = high_pass_filter(temp);
-//	image result = apply_filter(target, filter);
-//	save_image(result, out);
+	char *out2 = find_char_arg(argc, argv, "-o", "out2");
 
+	//starting clock
+	clock_t begin = clock();
+	//prompting for input
+	printf("Enter the image name you want to use:\n");
+	fflush(stdout);
+	scanf("%s", &image_name);
+	image target = load_image(image_name);
+	printf("Enter the assignment # you want to demo:\n");
+	fflush(stdout);
+	scanf("%d", &assignment);
+	//different assignments
+	if (assignment == 1){
+		int filter_number;
+		image temp = make_box_filter(3), filter;
+		//prompting for input
+		printf("Which filter do you want to use?\n");
+		printf("outline = 1|sobel = 2|blur = 3|high pass = 4\n");
+		fflush(stdout);
+		scanf("%d", &filter_number);
+		//different filters
+		if (filter_number == 1){
+			filter = outline_filter(temp);
+		}
+		else if(filter_number == 2){
+			filter = sobel_filter(temp);
+		}
+		else if(filter_number == 3){
+			filter = blur_filter(temp);
+		}
+		else if(filter_number == 4){
+			filter = high_pass_filter(temp);
+		}
+		else if(filter_number == 5){
+			filter = emboss_filter(temp);
+		}
+		image result = apply_filter(target, filter);
+		save_image(result, out);
+	}
+	else if(assignment == 2){
+		image result = segment_image(target);
+	}
+	else if(assignment == 3){
+		//filters for 1 by 3
+		image filter1 = make_image(3, 1, 1);
+		image filter2 = make_image(1, 3, 1);
+		//filter for 3 by 3
+		image filter3 = make_image(3, 3, 1);
+		//populating filter arrays
+		for (int i = 0; i < 3; i++){
+			filter1.data[i] = (float)(1)/(float)(3);
+			filter2.data[i] = (float)(1)/(float)(3);
+		}
+		for (int i = 0; i < 9; i++){
+			filter3.data[i] = (float)(1)/(float)(9);
+		}
+		//doing convolutions
+		image result1 = apply_filter(target, filter1);
+		result1 = apply_filter(result1, filter2);
+		image result2 = apply_filter(target, filter3);
+		save_image(result1, out);
+		save_image(result2, out2);
+	}
 	// ending the clock
 	clock_t end = clock();
 	double time = (double) (end - begin) / CLOCKS_PER_SEC;
