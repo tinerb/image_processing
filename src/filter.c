@@ -80,14 +80,13 @@ image emboss_filter(image target){
 
 
 image rotate_filter(image filter){
-	int size = filter.w * filter.w;
+	int size = filter.w * filter.h;
 	int counter = size - 1;
-	image rotated = make_image(filter.w, filter.w, 1);
+	image rotated = make_image(filter.w, filter.h, 1);
 	for(int i = 0; i < size; i++){
 		rotated.data[i] = filter.data[counter];
 		counter--;
 	}
-
 	return rotated;
 }
 
@@ -122,7 +121,7 @@ image apply_filter(image target, image filter){
 	image rotated = rotate_filter(filter);
 
 	// array to hold the pixel values which will be convoluted
-	float pixels_to_change[9];
+	float pixels_to_change[filter.h * filter.w];
 
 	// finding the centre pixel for our filter
 	int current_pixel = 0;
@@ -130,16 +129,11 @@ image apply_filter(image target, image filter){
 	// runs through all of the pixels in image
 	for(int y = 0; y < (target.h); y++){
 		for(int x = 0; x < (target.w); x++){
-			pixels_to_change[0] = find_pixel_conv(target, x - 2, y - 2, 0); // top left corner
-			pixels_to_change[1] = find_pixel_conv(target, x - 1, y - 2, 0); // top middle
-			pixels_to_change[2] = find_pixel_conv(target, x, y - 2, 0); // top right
-			pixels_to_change[3] = find_pixel_conv(target, x - 2, y - 1, 0); // middle left
-			pixels_to_change[4] = find_pixel_conv(target, x - 1, y - 1, 0); // middle
-			pixels_to_change[5] = find_pixel_conv(target, x, y - 1, 0); // middle right
-			pixels_to_change[6] = find_pixel_conv(target, x - 2, y, 0); // bottom left
-			pixels_to_change[7] = find_pixel_conv(target, x - 1, y, 0); // bottom middle
-			pixels_to_change[8] = find_pixel_conv(target, x, y, 0); // bottom right
-
+			for(int i = 0; i < filter.h; i++){
+				for(int j = 0; j < filter.w; j++){
+					pixels_to_change[filter.w * i + j] = find_pixel_conv(target, x + filter.w - j, y + filter.h - i, 0);
+				}
+			}
 			if( (y == 1000) && (x == 1000) ){
 				print_target_matrix(target, x, y);
 			}
@@ -148,11 +142,11 @@ image apply_filter(image target, image filter){
 			// add the result image to regular
 
 			// do convolution calculations
-			for(int q = 0; q < 9; q++){
+			for(int q = 0; q < filter.h * filter.w; q++){
 				sum += (pixels_to_change[q] * rotated.data[q]);
 			}
 			// divide to get proper changed value; not blown out
-			sum = sum / 9;
+			//sum = sum / 9;
 
 			if(sum < 0.01){
 				sum = 0;
@@ -170,6 +164,5 @@ image apply_filter(image target, image filter){
 
 	printf("we made it to end of apply filter\n");
 	fflush(stdout);
-
 	return result;
 }
