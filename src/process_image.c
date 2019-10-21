@@ -144,9 +144,6 @@ int main(int argc, char **argv){
 		else if(filter_number == 4){
 			filter = high_pass_filter(temp);
 		}
-		else if(filter_number == 5){
-			filter = emboss_filter(temp);
-		}
 		image result = apply_filter(target, filter);
 		save_image(result, out);
 	}
