@@ -42,12 +42,24 @@ void display_backward(node *tail) {
 }
 
 
+//// returns the node that we want to change
+//node* search(node *tail, int num, int equivalent) {
+//	while ((tail != NULL) && (tail->data != num)) {
+//		tail = tail->prev;
+//	}
+//
+//	tail->equivalent = equivalent;
+//	return tail;
+//}
+
 // returns the node that we want to change
-node* search(node *tail, int num) {
+void update_list(node *tail, int num, int equivalent) {
 	while ((tail != NULL) && (tail->data != num)) {
 		tail = tail->prev;
 	}
-	return tail;
+
+	tail->equivalent = equivalent;
+	return;
 }
 
 void clean(node **headp) {
@@ -74,11 +86,11 @@ image label_image(image filtered_image){
 	float threshold = histogram_threshold(filtered_image);
 	for (int i = 0; i < result.w * result.h; i++){
 		if (filtered_image.data[i] < threshold){
-			result.data[i] = 1;
+			result.data[i] = 0; // black pixel
 			white++;
 		}
 		else{
-			result.data[i] = 0;
+			result.data[i] = 1; // white pixel
 			black++;
 		}
 	}
@@ -88,55 +100,61 @@ image label_image(image filtered_image){
 
 /*
  * does raster scan and assigns segment labels to foreground
+ * int is_binary - 0 if it is binary, 1 if it is grayscale
  *
  * returns labeled_image
  */
-image raster_scan(image filtered_image){
+image raster_scan(image filtered_image, int is_binary){
 	// our current equivalence label number
-	int current_equivalence = 1;
-	int top_pixel, left_pixel, current_pixel, top_left_pixel;
-	image labeled_image = label_image(filtered_image);
+	int current_equivalence = 2;
+	float top_pixel, left_pixel, current_pixel, top_left_pixel;
+	image labeled_image;
+
+	if(is_binary == 1){
+		labeled_image = label_image(filtered_image);
+	}
+	else{
+		labeled_image = filtered_image;
+	}
 
 	for(int y = 0; y < (labeled_image.h); y++){
 		for(int x = 0; x < (labeled_image.w); x++){
 			// sets current pixel
-			current_pixel = labeled_image.data[y * labeled_image.w + x]; // this might be very wrong; too tired to do math rn
+			current_pixel = labeled_image.data[y * labeled_image.w + x];
 			// found foreground
-			if(current_pixel == -1){
+			if(current_pixel == 0){
 				// looks to the needed adjacent pixel to see if they're already labeled
 				top_pixel = find_pixel_conv(labeled_image, x, y - 1, 0); // top middle
 				left_pixel = find_pixel_conv(labeled_image, x - 1, y, 0); // middle left
-				top_left_pixel = find_pixel_conv(labeled_image, x - 1, y - 1, 0);
+				top_left_pixel = find_pixel_conv(labeled_image, x - 1, y - 1, 0); // top left
 
-				// SOMEWHERE IN THIS LOGIC WE HAVE TO ADD EQUIVALENCE LIST STUFF
-
-				// if both VIP pixels are labeled, choose smallest value
-				// keeps out equivalence list consistent
-				// this might be wrong; might only want top pixel
-
-				// changed result.data[i] = 1; in label_image() for better results ie. only white and black values
-				// this change greatly effects the code below, but im too tired to fix it rn
-				if(top_pixel > 0 && left_pixel > 0){
+				if(top_pixel > 1 && left_pixel > 1 && top_pixel != left_pixel){
+					printf("gang\n");
 					if(top_pixel < left_pixel){
 						current_pixel = top_pixel;
+						// updates list?
+						update_list(&tail, left_pixel, top_pixel);
 					} else{
 						current_pixel = left_pixel;
+						// updates list?
+						update_list(&tail, top_pixel, left_pixel);
 					}
 				}
 
-				else if(top_pixel > 0){
+				else if(top_pixel > 1){
 					current_pixel = top_pixel;
 				}
-				else if(left_pixel > 0){
+				else if(left_pixel > 1){
 					current_pixel = left_pixel;
 				}
-				else if(top_left_pixel > 0){
+				else if(top_left_pixel > 1){
 					current_pixel = top_left_pixel;
 				}
 				// found new region; top and left pixels are not foreground
 				else{
 					current_pixel = current_equivalence;
-					if(current_equivalence == 1){ // this IF might be redundant
+//					printf("current_pixel = %f\n", current_pixel);
+					if(current_equivalence == 2){ // this IF might be redundant
 						node *n = new_node(current_equivalence, current_equivalence);
 						insert_end(&head, &tail, n);
 					}
@@ -150,9 +168,12 @@ image raster_scan(image filtered_image){
 			}
 			// sets the labeled image to the region label value
 			labeled_image.data[y * labeled_image.w + x] = current_pixel;
+//			printf("labeled_image.data[y * labeled_image.w + x] = %f\n", labeled_image.data[y * labeled_image.w + x]);
 		}
+//		print_image(labeled_image);
 	}
 
+	printf("Displaying E-List:\n");
 	display_forward(head);
 
 	return labeled_image;
@@ -178,9 +199,9 @@ image apply_equivalence_list(image labeled_image, int equivalence_list){
  *
  * returns segmented_image (labeled_image)
  */
-image segment_image(image filtered_image){
+image segment_image(image filtered_image, int is_binary){
 
-	image labeled_image = raster_scan(filtered_image);
+	image labeled_image = raster_scan(filtered_image, is_binary);
 	// CHANGE labeled_image WITH EQUIVALENCE LIST STUFF
 	//image segmented_image = apply_equivalence_list(labeled_image, equivalence_list);
 

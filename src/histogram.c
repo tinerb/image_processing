@@ -40,7 +40,6 @@ unsigned char get_threshold(int hist[], int T){
 		// math to find new threshold
 		prev_mean_1_amount = mean_1_amount;
 		prev_mean_2_amount = mean_2_amount;
-
 		average_1 = mean_1 / mean_1_amount;
 		average_2 = mean_2 / mean_2_amount;
 		float temp = (average_1 + average_2) / 2;
@@ -53,7 +52,7 @@ unsigned char get_threshold(int hist[], int T){
 		mean_2_amount = 0;
 	}
 
-	return (unsigned char) prev_mean_2_amount;
+	return (unsigned char) prev_mean_2_amount; // unsigned char for further calculations
 }
 
 // gets the threshold value from our image
@@ -76,6 +75,6 @@ float histogram_threshold(image im){
 	threshold = get_threshold(hist, T);
 	return_threshold = (float)threshold/255.;
 	t = return_threshold;
-	printf("t: %f\n", t);
+//	printf("t: %f\n", t);
 	return t;
 }

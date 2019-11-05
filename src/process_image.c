@@ -111,6 +111,7 @@ int main(int argc, char **argv){
 	int assignment;
 	char *out = find_char_arg(argc, argv, "-o", "out");
 	char *out2 = find_char_arg(argc, argv, "-o", "out2");
+	int is_binary;
 
 	//starting clock
 	clock_t begin = clock();
@@ -148,7 +149,11 @@ int main(int argc, char **argv){
 		save_image(result, out);
 	}
 	else if(assignment == 2){
-		image result = segment_image(target);
+		printf("Is the image binary? (0 if yes, 1 if greyscale)\n");
+		fflush(stdout);
+		scanf("%d", &is_binary);
+		image result = segment_image(target, is_binary);
+		save_image(result, out);
 	}
 	else if(assignment == 3){
 		//filters for 1 by 3
