@@ -6,6 +6,7 @@
 #include <time.h>
 #include "filter.h"
 #include "image.h"
+#include "scaling.h"
 #include "segmentation.h"
 
 
@@ -175,6 +176,10 @@ int main(int argc, char **argv){
 		image result2 = apply_filter(target, filter3);
 		save_image(result1, out);
 		save_image(result2, out2);
+	}
+	else if(assignment == 4){
+		image result = scale(target);
+		save_image(result, out);
 	}
 	// ending the clock
 	clock_t end = clock();
