@@ -140,7 +140,7 @@ image apply_filter(image target, image filter){
 		for(int x = 0; x < (target.w); x++){
 			for(int i = 0; i < filter.h; i++){
 				for(int j = 0; j < filter.w; j++){
-					pixels_to_change[filter.w * i + j] = find_pixel_conv(target, x + filter.w - j, y + filter.h - i, 0);
+					pixels_to_change[filter.w * i + j] = find_pixel_conv(target, x + j, y + i, 0);
 				}
 			}
 			if( (y == 1000) && (x == 1000) ){
