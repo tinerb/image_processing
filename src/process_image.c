@@ -8,6 +8,7 @@
 #include "image.h"
 #include "scaling.h"
 #include "segmentation.h"
+#include "feature_vector.h"
 
 
 void print_image(image target){
@@ -180,6 +181,13 @@ int main(int argc, char **argv){
 	else if(assignment == 4){
 		image result = scale(target);
 		save_image(result, out);
+	}
+	else if(assignment == 5){
+		float *vector = malloc(sizeof(float) * 9);
+		vector = get_vector(target);
+		for (int i = 0; i < 9; i++){
+			printf("%f ", vector[i]);
+		}
 	}
 	// ending the clock
 	clock_t end = clock();
