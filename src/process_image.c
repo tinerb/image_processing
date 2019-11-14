@@ -184,10 +184,13 @@ int main(int argc, char **argv){
 	}
 	else if(assignment == 5){
 		float *vector = malloc(sizeof(float) * 9);
+		FILE *fptr = fopen("vector.txt", "a");
 		vector = get_vector(target);
 		for (int i = 0; i < 9; i++){
-			printf("%f ", vector[i]);
+			fprintf(fptr, "%f ", vector[i]);
 		}
+		fprintf(fptr, "\n");
+		fclose(fptr);
 	}
 	// ending the clock
 	clock_t end = clock();
