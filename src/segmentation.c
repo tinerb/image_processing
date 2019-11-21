@@ -63,9 +63,11 @@ image raster_scan(image filtered_image, int is_binary){
 	int current_equivalence = 2;
 	int list_len;
 	int seg_temp;
+	int seg_num;
 	float node_data, node_eq; // used for when we segment_list
 	float top_pixel, left_pixel, current_pixel, top_left_pixel;
 	image labeled_image;
+	image temp_image;
 	node *temp = NULL;
 	segment_data *temp_seg;
 
@@ -78,8 +80,6 @@ image raster_scan(image filtered_image, int is_binary){
 		// change threshold depending on image you use
 		labeled_image = trivial_clamp(filtered_image, 0.8); // change threshold value depending on image you use
 	}
-
-//	return labeled_image;
 
 	for(int y = 0; y < (labeled_image.h); y++){
 		for(int x = 0; x < (labeled_image.w); x++){
@@ -144,7 +144,7 @@ image raster_scan(image filtered_image, int is_binary){
 	// correct the equivalence list
 	for(int i = 0; i < list_len; i++){
 		temp = search(head, s);
-		s++;							// BUG SOMEWHERE HERE?
+		s++;
 		node_data = temp->data;
 		node_eq = temp->equivalent;
 		if(node_data != node_eq){
@@ -156,8 +156,6 @@ image raster_scan(image filtered_image, int is_binary){
 	// ---------------------
 	// GET IMAGE SEGMENTS
 	// ---------------------
-
-	printf("labeled_image.h: %d\n", labeled_image.h);
 
 	for(int y = 0; y < (labeled_image.h); y++){
 			for(int x = 0; x < (labeled_image.w); x++){
@@ -200,18 +198,24 @@ image raster_scan(image filtered_image, int is_binary){
 				}
 			}
 	}
-	display_seg_forward(seg_head);
 
 	// ---------------------
 	// MAKE EACH SEGMENT INTO THEIR OWN IMAGE
 	// ---------------------
 
-	temp_seg = search_seg(seg_head, 24);
+
+	int regions = get_regions(head);
+	printf("There are %d segments.\n", regions);
+	printf("Which segment would you like to recognize?\n");
+	fflush(stdout);
+	scanf("%d", &seg_num);
+
+	temp_seg = get_seg_value_at_index(seg_head, seg_num - 1);
 	int temp_w = temp_seg->max_x - temp_seg->min_x;
 	int temp_h = temp_seg->max_y - temp_seg->min_y;
 	int temp_ny = 0; // for new image
 	int temp_nx = 0; // for new image
-	image temp_image = make_image(temp_w, temp_h, 1);
+	temp_image = make_image(temp_w, temp_h, 1);
 	for(int y = temp_seg->min_y; y < temp_seg->max_y; y++){
 		for(int x = temp_seg->min_x; x < temp_seg->max_x; x++){
 			current_pixel = labeled_image.data[y * labeled_image.w + x];
@@ -227,17 +231,14 @@ image raster_scan(image filtered_image, int is_binary){
 		temp_nx = 0;
 	}
 
+
 	// ---------------------
 
-	int regions = get_regions(head);
-	printf("REGIONS = %d\n", regions);
 
 	// memory clean
 	clean(&head);
 	seg_clean(&seg_head);
-	// MAKE ALL REGIONS BLACK AGAIN; OUTPUT RN IS WEIRD
-	return temp_image; // change to 'return labeled_image;' after you're done with getting each image segment
-//	return labeled_image;
+	return temp_image;
 }
 
 /*
@@ -249,9 +250,9 @@ image raster_scan(image filtered_image, int is_binary){
  */
 image segment_image(image filtered_image, int is_binary){
 
-	image labeled_image = raster_scan(filtered_image, is_binary);
-	// CHANGE labeled_image WITH EQUIVALENCE LIST STUFF
-	//image segmented_image = apply_equivalence_list(labeled_image, equivalence_list);
+	image labeled_image;
+	labeled_image = raster_scan(filtered_image, is_binary);
+
 
 	return labeled_image;
 }

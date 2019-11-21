@@ -142,7 +142,7 @@ void seg_insert_end(segment_data **headp, segment_data **tailp, segment_data *ne
 void display_seg_forward(segment_data *head) {
 	segment_data *np;
 	for (np = head; np != NULL; np = np->next){
-		printf("seg_value: %f, min_x: %d, min_y: %d, max_x: %d, max_y: %d w: %d h: %d\n", np->seg_value, np->min_x, np->min_y, np->max_x, np->max_y, np->max_x - np->min_x + 1, np->max_y - np->min_y + 1);
+		printf("seg_value: %f, min_x: %d, min_y: %d, max_x: %d, max_y: %d w: %d h: %d\n", np->seg_value, np->min_x, np->min_y, np->max_x, np->max_y, np->max_x - np->min_x, np->max_y - np->min_y);
 	}
 }
 
@@ -165,6 +165,27 @@ int is_seg_unique(segment_data *head, float num){
 	}
 
 	return unique;
+}
+
+int seg_len(segment_data *head) {
+	int len = 0;
+	segment_data *np;
+	for (np = head; np != NULL; np = np->next){
+		len++;
+	}
+
+	return len;
+}
+
+segment_data* get_seg_value_at_index(segment_data *head, int seg_num){
+	int i = 0;
+	while ((head != NULL) && (i < seg_num)) {
+		head = head->next;
+		i++;
+
+	}
+
+	return head;
 }
 
 void seg_clean(segment_data **headp) {

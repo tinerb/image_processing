@@ -44,6 +44,8 @@ void seg_clean(segment_data **headp);
 void seg_insert_end(segment_data **headp, segment_data **tailp, segment_data *new_np);
 void display_seg_forward(segment_data *head);
 segment_data* search_seg(segment_data *head, float num);
+int seg_len(segment_data *head);
+segment_data* get_seg_value_at_index(segment_data *head, int seg_num);
 int is_seg_unique(segment_data *head, float num);
 
 #endif /* SEGMENTATION_LIST_UTILITIES_H_ */
