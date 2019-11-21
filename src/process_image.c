@@ -95,8 +95,6 @@ image rgb_to_grayscale(image im)
     return gray;
 }
 
-
-
 // These might be handy
 float three_way_max(float a, float b, float c)
 {
@@ -183,15 +181,28 @@ int main(int argc, char **argv){
 		save_image(result, out);
 	}
 	else if(assignment == 5){
+		int temp, result;
 		float *vector = malloc(sizeof(float) * 9);
-		FILE *fptr = fopen("vector.txt", "a");
+		FILE *fptr;
 		vector = get_vector(target);
-		for (int i = 0; i < 9; i++){
-			fprintf(fptr, "%f ", vector[i]);
+		printf("0 to write to dataset. 1 to recognize character.\n");
+		fflush(stdout);
+		scanf("%d", &temp);
+		if (temp == 0){
+			fptr = fopen("vector.txt", "a");
+			for (int i = 0; i < 9; i++){
+				fprintf(fptr, "%f ", vector[i]);
+			}
+			fprintf(fptr, "\n");
 		}
-		fprintf(fptr, "\n");
+		else if(temp == 1){
+			fptr = fopen("vector.txt", "r");
+			result = recognize(fptr, vector);
+			printf("The character is: %d\n", result);
+		}
 		fclose(fptr);
 	}
+
 	// ending the clock
 	clock_t end = clock();
 	double time = (double) (end - begin) / CLOCKS_PER_SEC;

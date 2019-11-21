@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include "feature_vector.h"
 
 float *get_vector(image target){
@@ -32,3 +33,31 @@ float *get_vector(image target){
 	}
 	return vector;
 }
+
+int recognize(FILE *file, float *vector){
+	int result = 0;
+	float sum = 0, compare = 10000, temp_vector[9], vector_sum[10];
+	for (int i = 0; i < 10; i++){
+		vector_sum[i] = 0;
+	}
+	for (int i = 0; i < 20; i++){
+		for (int j = 0; j < 9; j++){
+			fscanf(file, "%f", &temp_vector[j]);
+			sum += abs(vector[j] - temp_vector[j]);
+		}
+		vector_sum[i%10] += sum;
+		sum = 0;
+	}
+	for (int i = 0; i < 10; i++){
+		vector_sum[i] = vector_sum[i]/2;
+		if (vector_sum[i] < compare){
+			printf("%d\n", i);
+			compare = vector_sum[i];
+			result = i;
+		}
+	}
+
+	return result;
+}
+
+

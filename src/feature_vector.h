@@ -11,6 +11,7 @@
 #include "image.h"
 
 float *get_vector(image target);
+int recognize(FILE *test, float *vectors);
 
 
 #endif /* SRC_FEATURE_VECTOR_H_ */
