@@ -182,7 +182,7 @@ int main(int argc, char **argv){
 	}
 	else if(assignment == 5){
 		int temp, result;
-		float *vector = malloc(sizeof(float) * 9);
+		float *vector = malloc(sizeof(float) * 16);
 		FILE *fptr;
 		vector = get_vector(target);
 		printf("0 to write to dataset. 1 to recognize character.\n");
@@ -190,7 +190,7 @@ int main(int argc, char **argv){
 		scanf("%d", &temp);
 		if (temp == 0){
 			fptr = fopen("vector.txt", "a");
-			for (int i = 0; i < 9; i++){
+			for (int i = 0; i < 16; i++){
 				fprintf(fptr, "%f ", vector[i]);
 			}
 			fprintf(fptr, "\n");
