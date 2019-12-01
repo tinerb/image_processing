@@ -202,6 +202,10 @@ int main(int argc, char **argv){
 		}
 		fclose(fptr);
 	}
+	else if (assignment == 6){
+		image result = label_image(target);
+		save_image(result, out);
+	}
 
 	// ending the clock
 	clock_t end = clock();
