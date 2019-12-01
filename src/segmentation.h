@@ -1,10 +1,3 @@
-/*
- * segmentation.h
- *
- *  Created on: Oct. 1, 2019
- *      Author: Adam Gumieniak
- */
-
 #ifndef IMAGE_PROCESSING_SRC_SEGMENTATION_H_
 #define IMAGE_PROCESSING_SRC_SEGMENTATION_H_
 

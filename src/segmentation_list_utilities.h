@@ -1,10 +1,3 @@
-/*
- * segmetation_list_utilities.h
- *
- *  Created on: Nov. 14, 2019
- *      Author: Adam Gumieniak
- */
-
 #ifndef SEGMENTATION_LIST_UTILITIES_H_
 #define SEGMENTATION_LIST_UTILITIES_H_
 

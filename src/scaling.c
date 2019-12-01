@@ -5,7 +5,6 @@
 #include "filter.h"
 
 image scale(image target){
-
     int x, y, x2, y2;
     float p, q;
     image result = make_image(target.w/2, target.h/2, 1);

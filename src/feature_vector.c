@@ -40,16 +40,16 @@ int recognize(FILE *file, float *vector){
 	for (int i = 0; i < 10; i++){
 		vector_sum[i] = 0;
 	}
-	for (int i = 0; i < 30; i++){
+	for (int i = 0; i < 20; i++){
 		for (int j = 0; j < 16; j++){
 			fscanf(file, "%f", &temp_vector[j]);
-			sum += abs(vector[j] - temp_vector[j]);
+			sum += abs(temp_vector[j] - vector[j]);
 		}
 		vector_sum[i%10] += sum;
 		sum = 0;
 	}
 	for (int i = 0; i < 10; i++){
-		vector_sum[i] = vector_sum[i]/3;
+		vector_sum[i] = vector_sum[i]/2;
 		if (vector_sum[i] < compare){
 			compare = vector_sum[i];
 			result = i;
