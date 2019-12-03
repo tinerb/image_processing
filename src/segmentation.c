@@ -212,6 +212,10 @@ image raster_scan(image filtered_image, int is_binary){
 	scanf("%d", &seg_num);
 
 	temp_seg = get_seg_value_at_index(seg_head, seg_num - 1);
+
+	int black_pixels = 0;
+	int white_pixels = 0;
+
 	int temp_w = temp_seg->max_x - temp_seg->min_x;
 	int temp_h = temp_seg->max_y - temp_seg->min_y;
 	int temp_ny = 0; // for new image
@@ -222,9 +226,11 @@ image raster_scan(image filtered_image, int is_binary){
 			current_pixel = labeled_image.data[y * labeled_image.w + x];
 			if(current_pixel == temp_seg->seg_value){
 				temp_image.data[temp_ny * temp_w + temp_nx] = 0;
+				black_pixels++;
 			}
 			else{
 				temp_image.data[temp_ny * temp_w + temp_nx] = 1;
+				white_pixels++;
 			}
 			temp_nx++;
 		}
@@ -232,6 +238,7 @@ image raster_scan(image filtered_image, int is_binary){
 		temp_nx = 0;
 	}
 
+	printf("Region %d has %d white pixels and %d black pixels.\n", seg_num, white_pixels, black_pixels);
 
 	// ---------------------
 
