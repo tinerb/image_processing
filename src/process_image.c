@@ -152,8 +152,9 @@ int main(int argc, char **argv){
 		printf("Is the image binary? (0 if yes, 1 if greyscale)\n");
 		fflush(stdout);
 		scanf("%d", &is_binary);
-		image result = write_entire_image(target, is_binary);
+		image result = segment_image(target, is_binary);
 		save_image(result, out);
+
 	}
 	else if(assignment == 3){
 		//filters for 1 by 3
@@ -177,7 +178,7 @@ int main(int argc, char **argv){
 		save_image(result2, out2);
 	}
 	else if(assignment == 4){
-		image result = scale(target);
+		image result = scale_segments(target, 0);
 		save_image(result, out);
 	}
 	else if(assignment == 5){
@@ -189,11 +190,8 @@ int main(int argc, char **argv){
 		fflush(stdout);
 		scanf("%d", &temp);
 		if (temp == 0){
-			fptr = fopen("vector.txt", "a");
-			for (int i = 0; i < 16; i++){
-				fprintf(fptr, "%f ", vector[i]);
-			}
-			fprintf(fptr, "\n");
+			image result = write_entire_image(target, 0);
+			save_image(result, out);
 		}
 		else if(temp == 1){
 			fptr = fopen("vector.txt", "r");
@@ -201,6 +199,10 @@ int main(int argc, char **argv){
 			printf("The character is: %d\n", result);
 		}
 		fclose(fptr);
+	}
+	else if(assignment == 6){
+		image result = label_image(target);
+		save_image(result, out);
 	}
 
 	// ending the clock
